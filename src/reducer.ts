@@ -1,4 +1,4 @@
-import type { User } from "oidc-client-ts";
+import type { User } from "@carbonext/oidc-client-ts";
 
 import type { AuthState } from "./AuthState";
 

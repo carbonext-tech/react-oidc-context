@@ -1,6 +1,6 @@
 import { renderHook } from "@testing-library/react-hooks";
 import { mocked } from "jest-mock";
-import { UserManager, User } from "oidc-client-ts";
+import { UserManager, User } from "@carbonext/oidc-client-ts";
 import { act } from "react-test-renderer";
 
 import { useAuth } from "../src/useAuth";

@@ -1,4 +1,4 @@
-import type { User } from "oidc-client-ts";
+import type { User } from "@carbonext/oidc-client-ts";
 
 /**
  * The auth state which, when combined with the auth methods, make up the return object of the `useAuth` hook.
@@ -24,7 +24,7 @@ export interface AuthState {
     /**
      * Tracks the status of most recent signin/signout request method.
      */
-    activeNavigator?: "signinRedirect" | "signinPopup" | "signinSilent" | "signoutRedirect" | "signoutPopup";
+    activeNavigator?: "signinRedirect" | "signinPopup" | "signinSilent" | "signoutRedirect" | "signoutPopup" | "registerRedirect";
 
     /**
      * Was there a signin or silent renew error?

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import { UserManager, UserManagerSettings, User } from "oidc-client-ts";
-import type { SignoutRedirectArgs, SignoutPopupArgs } from "oidc-client-ts";
+import { UserManager, UserManagerSettings, User } from "@carbonext/oidc-client-ts";
+import type { SignoutRedirectArgs, SignoutPopupArgs } from "@carbonext/oidc-client-ts";
 
 import { AuthContext } from "./AuthContext";
 import { initialAuthState } from "./AuthState";
@@ -81,16 +81,20 @@ const userManagerContextKeys = [
     "startSilentRenew",
     "stopSilentRenew",
 ] as const;
+
 const navigatorKeys = [
     "signinPopup",
     "signinSilent",
     "signinRedirect",
+    "registerRedirect",
     "signoutPopup",
     "signoutRedirect",
 ] as const;
+
 const unsupportedEnvironment = (fnName: string) => () => {
     throw new Error(`UserManager#${fnName} was called from an unsupported context. If this is a server-rendered page, defer this call with useEffect() or pass a custom UserManager implementation.`);
 };
+
 const defaultUserManagerImpl = typeof window === "undefined" ? null : UserManager;
 
 /**

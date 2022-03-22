@@ -4,9 +4,10 @@ import type {
     SigninPopupArgs, SigninSilentArgs, SigninRedirectArgs,
     SignoutRedirectArgs, SignoutPopupArgs, QuerySessionStatusArgs,
     RevokeTokensTypes,
-} from "oidc-client-ts";
+} from "@carbonext/oidc-client-ts";
 
 import type { AuthState } from "./AuthState";
+import type { RegisterRedirectArgs } from "@carbonext/oidc-client-ts";
 
 /**
  * @public
@@ -22,6 +23,7 @@ export interface AuthContextProps extends AuthState {
     signinPopup(args?: SigninPopupArgs): Promise<User>;
     signinSilent(args?: SigninSilentArgs): Promise<User | null>;
     signinRedirect(args?: SigninRedirectArgs): Promise<void>;
+    registerRedirect(args?: RegisterRedirectArgs): Promise<void>;
     signoutRedirect(args?: SignoutRedirectArgs): Promise<void>;
     signoutPopup(args?: SignoutPopupArgs): Promise<void>;
     querySessionStatus(args?: QuerySessionStatusArgs): Promise<SessionStatus | null>;
