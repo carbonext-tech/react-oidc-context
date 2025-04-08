@@ -17,7 +17,6 @@ import type {
 } from "@carbonext/oidc-client-ts";
 
 import type { AuthState } from "./AuthState";
-import type { RegisterRedirectArgs } from "@carbonext/oidc-client-ts";
 
 /**
  * @public
