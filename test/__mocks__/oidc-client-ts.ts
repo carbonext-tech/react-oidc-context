@@ -1,6 +1,16 @@
-import type { UserManager, UserManagerEvents, UserManagerSettings } from "oidc-client-ts";
+import type {
+    UserManager,
+    UserManagerEvents,
+    UserManagerSettings,
+} from "@carbonext/oidc-client-ts";
 
-const MockUserManager: typeof UserManager = jest.fn(function (this: { events: Partial<UserManagerEvents>; settings: Partial<UserManagerSettings> }, args: UserManagerSettings) {
+const MockUserManager: typeof UserManager = jest.fn(function (
+    this: {
+        events: Partial<UserManagerEvents>;
+        settings: Partial<UserManagerSettings>;
+    },
+    args: UserManagerSettings,
+) {
     this.events = {
         load: jest.fn(),
         unload: jest.fn(),
@@ -28,26 +38,54 @@ const MockUserManager: typeof UserManager = jest.fn(function (this: { events: Pa
 
     return this as UserManager;
 });
-MockUserManager.prototype.clearStaleState = jest.fn().mockResolvedValue(undefined);
+MockUserManager.prototype.clearStaleState = jest
+    .fn()
+    .mockResolvedValue(undefined);
 MockUserManager.prototype.getUser = jest.fn().mockResolvedValue(undefined);
 MockUserManager.prototype.storeUser = jest.fn().mockResolvedValue(undefined);
 MockUserManager.prototype.removeUser = jest.fn().mockResolvedValue(undefined);
 MockUserManager.prototype.signinPopup = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signinPopupCallback = jest.fn().mockResolvedValue(undefined);
+MockUserManager.prototype.signinPopupCallback = jest
+    .fn()
+    .mockResolvedValue(undefined);
 MockUserManager.prototype.signinSilent = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signinSilentCallback = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signinRedirect = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signinRedirectCallback = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signinResourceOwnerCredentials = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signoutRedirect = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signoutRedirectCallback = jest.fn().mockResolvedValue(undefined);
+MockUserManager.prototype.signinSilentCallback = jest
+    .fn()
+    .mockResolvedValue(undefined);
+MockUserManager.prototype.signinRedirect = jest
+    .fn()
+    .mockResolvedValue(undefined);
+MockUserManager.prototype.signinRedirectCallback = jest
+    .fn()
+    .mockResolvedValue(undefined);
+MockUserManager.prototype.signinResourceOwnerCredentials = jest
+    .fn()
+    .mockResolvedValue(undefined);
+MockUserManager.prototype.signoutRedirect = jest
+    .fn()
+    .mockResolvedValue(undefined);
+MockUserManager.prototype.signoutRedirectCallback = jest
+    .fn()
+    .mockResolvedValue(undefined);
 MockUserManager.prototype.signoutPopup = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signoutPopupCallback = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signoutSilent = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signoutSilentCallback = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signinCallback = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.signoutCallback = jest.fn().mockResolvedValue(undefined);
-MockUserManager.prototype.querySessionStatus = jest.fn().mockResolvedValue(undefined);
+MockUserManager.prototype.signoutPopupCallback = jest
+    .fn()
+    .mockResolvedValue(undefined);
+MockUserManager.prototype.signoutSilent = jest
+    .fn()
+    .mockResolvedValue(undefined);
+MockUserManager.prototype.signoutSilentCallback = jest
+    .fn()
+    .mockResolvedValue(undefined);
+MockUserManager.prototype.signinCallback = jest
+    .fn()
+    .mockResolvedValue(undefined);
+MockUserManager.prototype.signoutCallback = jest
+    .fn()
+    .mockResolvedValue(undefined);
+MockUserManager.prototype.querySessionStatus = jest
+    .fn()
+    .mockResolvedValue(undefined);
 MockUserManager.prototype.revokeTokens = jest.fn();
 MockUserManager.prototype.startSilentRenew = jest.fn();
 MockUserManager.prototype.stopSilentRenew = jest.fn();

@@ -1,6 +1,6 @@
 import { renderHook, waitFor, act } from "@testing-library/react";
 import { mocked } from "jest-mock";
-import { UserManager, User } from "oidc-client-ts";
+import { UserManager, User } from "@carbonext/oidc-client-ts";
 import { useAuth } from "../src/useAuth";
 import { createWrapper } from "./helpers";
 
@@ -111,19 +111,15 @@ describe("AuthProvider", () => {
     it("should handle signoutCallback success and call onSignoutCallback", async () => {
         // arrange
         const onSignoutCallback = jest.fn();
-        window.history.pushState(
-            {},
-            document.title,
-            "/signout-callback",
-        );
-        expect(window.location.pathname).toBe(
-            "/signout-callback",
-        );
+        window.history.pushState({}, document.title, "/signout-callback");
+        expect(window.location.pathname).toBe("/signout-callback");
 
         const wrapper = createWrapper({
             ...settingsStub,
-            post_logout_redirect_uri: "https://www.example.com/signout-callback",
-            matchSignoutCallback: () => window.location.pathname === "/signout-callback",
+            post_logout_redirect_uri:
+                "https://www.example.com/signout-callback",
+            matchSignoutCallback: () =>
+                window.location.pathname === "/signout-callback",
             onSignoutCallback,
         });
 
@@ -142,20 +138,18 @@ describe("AuthProvider", () => {
     it("should handle error when signoutCallback throws Error", async () => {
         // arrange
         const error = new TypeError("expected");
-        const onSignoutCallback = () => { throw error; };
-        window.history.pushState(
-            {},
-            document.title,
-            "/signout-callback",
-        );
-        expect(window.location.pathname).toBe(
-            "/signout-callback",
-        );
+        const onSignoutCallback = () => {
+            throw error;
+        };
+        window.history.pushState({}, document.title, "/signout-callback");
+        expect(window.location.pathname).toBe("/signout-callback");
 
         const wrapper = createWrapper({
             ...settingsStub,
-            post_logout_redirect_uri: "https://www.example.com/signout-callback",
-            matchSignoutCallback: () => window.location.pathname === "/signout-callback",
+            post_logout_redirect_uri:
+                "https://www.example.com/signout-callback",
+            matchSignoutCallback: () =>
+                window.location.pathname === "/signout-callback",
             onSignoutCallback,
         });
 
@@ -175,7 +169,8 @@ describe("AuthProvider", () => {
 
         // assert
         expect(result.current.error).toBeTruthy();
-        const { toString, ...actual } = result.current.error as unknown as Record<string, unknown>;
+        const { toString, ...actual } = result.current
+            .error as unknown as Record<string, unknown>;
         expect(actual).toEqual({
             name: error.name,
             message: error.message,
@@ -197,14 +192,18 @@ describe("AuthProvider", () => {
         await waitFor(() => expect(result.current.user).toBeUndefined());
 
         //act
-        await act(() => result.current.signinResourceOwnerCredentials({
-            username: "username",
-            password: "password",
-            skipUserInfo: false,
-        }));
+        await act(() =>
+            result.current.signinResourceOwnerCredentials({
+                username: "username",
+                password: "password",
+                skipUserInfo: false,
+            }),
+        );
 
         // assert
-        expect(UserManager.prototype.signinResourceOwnerCredentials).toHaveBeenCalled();
+        expect(
+            UserManager.prototype.signinResourceOwnerCredentials,
+        ).toHaveBeenCalled();
         expect(UserManager.prototype.getUser).toHaveBeenCalled();
     });
 
@@ -304,7 +303,9 @@ describe("AuthProvider", () => {
         // arrange
         const error = new TypeError("expected");
         const customUserManager = new UserManager({ ...settingsStub });
-        customUserManager.signinRedirect = () => { throw error; };
+        customUserManager.signinRedirect = () => {
+            throw error;
+        };
 
         const wrapper = createWrapper({
             userManager: customUserManager,
@@ -335,7 +336,8 @@ describe("AuthProvider", () => {
         expect(UserManager.prototype.signinRedirect).not.toHaveBeenCalled();
 
         expect(result.current.error).toBeTruthy();
-        const { toString, ...actual } = result.current.error as unknown as Record<string, unknown>;
+        const { toString, ...actual } = result.current
+            .error as unknown as Record<string, unknown>;
         expect(actual).toEqual({
             name: error.name,
             message: error.message,
@@ -358,7 +360,7 @@ describe("AuthProvider", () => {
         const wrapper = createWrapper({
             ...settingsStub,
             userManager: customUserManager,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any);
 
         expect(wrapper).toThrow(TypeError);

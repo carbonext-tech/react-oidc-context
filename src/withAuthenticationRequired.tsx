@@ -1,5 +1,5 @@
 import React from "react";
-import type { SigninRedirectArgs } from "oidc-client-ts";
+import type { SigninRedirectArgs } from "@carbonext/oidc-client-ts";
 
 import { useAuth } from "./useAuth";
 import { hasAuthParams } from "./utils";
@@ -35,14 +35,24 @@ export const withAuthenticationRequired = <P extends object>(
     Component: React.ComponentType<P>,
     options: WithAuthenticationRequiredProps = {},
 ): React.FC<P> => {
-    const { OnRedirecting = (): React.JSX.Element => <></>, onBeforeSignin, signinRedirectArgs } = options;
-    const displayName = `withAuthenticationRequired(${Component.displayName || Component.name})`;
+    const {
+        OnRedirecting = (): React.JSX.Element => <></>,
+        onBeforeSignin,
+        signinRedirectArgs,
+    } = options;
+    const displayName = `withAuthenticationRequired(${
+        Component.displayName || Component.name
+    })`;
     const C: React.FC<P> = (props) => {
         const auth = useAuth();
 
         React.useEffect(() => {
-            if (hasAuthParams() ||
-                auth.isLoading || auth.activeNavigator || auth.isAuthenticated) {
+            if (
+                hasAuthParams() ||
+                auth.isLoading ||
+                auth.activeNavigator ||
+                auth.isAuthenticated
+            ) {
                 return;
             }
             void (async (): Promise<void> => {
@@ -51,7 +61,11 @@ export const withAuthenticationRequired = <P extends object>(
             })();
         }, [auth.isLoading, auth.isAuthenticated, auth]);
 
-        return auth.isAuthenticated ? <Component {...props} /> : OnRedirecting();
+        return auth.isAuthenticated ? (
+            <Component {...props} />
+        ) : (
+            OnRedirecting()
+        );
     };
 
     C.displayName = displayName;

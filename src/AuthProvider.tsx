@@ -1,11 +1,24 @@
-import type { ProcessResourceOwnerPasswordCredentialsArgs, SignoutResponse } from "oidc-client-ts";
-import { User, UserManager, type UserManagerSettings } from "oidc-client-ts";
+import type {
+    ProcessResourceOwnerPasswordCredentialsArgs,
+    SignoutResponse,
+} from "@carbonext/oidc-client-ts";
+import {
+    User,
+    UserManager,
+    type UserManagerSettings,
+} from "@carbonext/oidc-client-ts";
 import React from "react";
 
 import { AuthContext } from "./AuthContext";
 import { type ErrorContext, initialAuthState } from "./AuthState";
 import { reducer } from "./reducer";
-import { hasAuthParams, normalizeError, renewSilentError, signinError, signoutError } from "./utils";
+import {
+    hasAuthParams,
+    normalizeError,
+    renewSilentError,
+    signinError,
+    signoutError,
+} from "./utils";
 
 /**
  * @public
@@ -75,7 +88,9 @@ export interface AuthProviderBaseProps {
      * }
      * ```
      */
-    onSignoutCallback?: (resp: SignoutResponse | undefined) => Promise<void> | void;
+    onSignoutCallback?: (
+        resp: SignoutResponse | undefined
+    ) => Promise<void> | void;
 
     /**
      * On remove user hook. Can be a async function.
@@ -96,7 +111,9 @@ export interface AuthProviderBaseProps {
  *
  * @public
  */
-export interface AuthProviderNoUserManagerProps extends AuthProviderBaseProps, UserManagerSettings {
+export interface AuthProviderNoUserManagerProps
+    extends AuthProviderBaseProps,
+    UserManagerSettings {
     /**
      * Prevent this property.
      */
@@ -118,7 +135,9 @@ export interface AuthProviderUserManagerProps extends AuthProviderBaseProps {
 /**
  * @public
  */
-export type AuthProviderProps = AuthProviderNoUserManagerProps | AuthProviderUserManagerProps;
+export type AuthProviderProps =
+    | AuthProviderNoUserManagerProps
+    | AuthProviderUserManagerProps;
 
 const userManagerContextKeys = [
     "clearStaleState",
@@ -127,22 +146,25 @@ const userManagerContextKeys = [
     "startSilentRenew",
     "stopSilentRenew",
 ] as const;
+
 const navigatorKeys = [
     "signinPopup",
     "signinSilent",
     "signinRedirect",
+    "registerRedirect",
     "signinResourceOwnerCredentials",
     "signoutPopup",
     "signoutRedirect",
     "signoutSilent",
 ] as const;
+
 const unsupportedEnvironment = (fnName: string) => () => {
     throw new Error(
         `UserManager#${fnName} was called from an unsupported context. If this is a server-rendered page, defer this call with useEffect() or pass a custom UserManager implementation.`,
     );
 };
-const UserManagerImpl =
-    typeof window === "undefined" ? null : UserManager;
+
+const UserManagerImpl = typeof window === "undefined" ? null : UserManager;
 
 /**
  * Provides the AuthContext to its child components.
@@ -166,10 +188,14 @@ export const AuthProvider = (props: AuthProviderProps): React.JSX.Element => {
     } = props;
 
     const [userManager] = React.useState(() => {
-        return userManagerProp ??
+        return (
+            userManagerProp ??
             (UserManagerImpl
-                ? new UserManagerImpl(userManagerSettings as UserManagerSettings)
-                : ({ settings: userManagerSettings } as UserManager));
+                ? new UserManagerImpl(
+                    userManagerSettings as UserManagerSettings,
+                )
+                : ({ settings: userManagerSettings } as UserManager))
+        );
     });
 
     const [state, dispatch] = React.useReducer(reducer, initialAuthState);
@@ -184,14 +210,17 @@ export const AuthProvider = (props: AuthProviderProps): React.JSX.Element => {
                     userManagerContextKeys.map((key) => [
                         key,
                         userManager[key]?.bind(userManager) ??
-                        unsupportedEnvironment(key),
+                            unsupportedEnvironment(key),
                     ]),
-                ) as Pick<UserManager, typeof userManagerContextKeys[number]>,
+                ) as Pick<UserManager, (typeof userManagerContextKeys)[number]>,
                 Object.fromEntries(
                     navigatorKeys.map((key) => [
                         key,
                         userManager[key]
-                            ? async (args: ProcessResourceOwnerPasswordCredentialsArgs & never[]) => {
+                            ? async (
+                                args: ProcessResourceOwnerPasswordCredentialsArgs &
+                                      never[],
+                            ) => {
                                 dispatch({
                                     type: "NAVIGATOR_INIT",
                                     method: key,
@@ -202,7 +231,10 @@ export const AuthProvider = (props: AuthProviderProps): React.JSX.Element => {
                                     dispatch({
                                         type: "ERROR",
                                         error: {
-                                            ...normalizeError(error, `Unknown error while executing ${key}(...).`),
+                                            ...normalizeError(
+                                                error,
+                                                `Unknown error while executing ${key}(...).`,
+                                            ),
                                             source: key,
                                             args: args,
                                         } as ErrorContext,
@@ -214,7 +246,7 @@ export const AuthProvider = (props: AuthProviderProps): React.JSX.Element => {
                             }
                             : unsupportedEnvironment(key),
                     ]),
-                ) as Pick<UserManager, typeof navigatorKeys[number]>,
+                ) as Pick<UserManager, (typeof navigatorKeys)[number]>,
             ),
         [userManager],
     );
@@ -247,7 +279,10 @@ export const AuthProvider = (props: AuthProviderProps): React.JSX.Element => {
 
             // sign-out
             try {
-                if (matchSignoutCallback && matchSignoutCallback(userManager.settings)) {
+                if (
+                    matchSignoutCallback &&
+                    matchSignoutCallback(userManager.settings)
+                ) {
                     const resp = await userManager.signoutCallback();
                     if (onSignoutCallback) await onSignoutCallback(resp);
                 }
@@ -258,7 +293,13 @@ export const AuthProvider = (props: AuthProviderProps): React.JSX.Element => {
                 });
             }
         })();
-    }, [userManager, skipSigninCallback, onSigninCallback, onSignoutCallback, matchSignoutCallback]);
+    }, [
+        userManager,
+        skipSigninCallback,
+        onSigninCallback,
+        onSignoutCallback,
+        matchSignoutCallback,
+    ]);
 
     // register to userManager events
     React.useEffect(() => {

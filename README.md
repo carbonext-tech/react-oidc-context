@@ -1,8 +1,10 @@
-# react-oidc-context
+# @carbonext/react-oidc-context
 
 [![Stable Release](https://img.shields.io/npm/v/react-oidc-context.svg)](https://npm.im/react-oidc-context)
 [![CI](https://github.com/authts/react-oidc-context/actions/workflows/ci.yml/badge.svg)](https://github.com/authts/react-oidc-context/actions/workflows/ci.yml)
 [![Codecov](https://img.shields.io/codecov/c/github/authts/react-oidc-context)](https://app.codecov.io/gh/authts/react-oidc-context)
+
+Esta biblioteca é uma fork da [react-oidc-context](https://github.com/authts/react-oidc-context) (v3.3.0) com adição de um register redirect.
 
 Lightweight auth library using the
 [oidc-client-ts](https://github.com/authts/oidc-client-ts) library for React
@@ -12,19 +14,19 @@ single page applications (SPA). Support for
 
 ## Table of Contents
 
-- [Documentation](#documentation)
-- [Installation](#installation)
-- [Getting Started](#getting-started)
-- [Contributing](#contributing)
-- [Influences](#influences)
-- [License](#license)
+-   [Documentation](#documentation)
+-   [Installation](#installation)
+-   [Getting Started](#getting-started)
+-   [Contributing](#contributing)
+-   [Influences](#influences)
+-   [License](#license)
 
 ## Documentation
 
 This library implements an auth context provider by making use of the
-`oidc-client-ts` library. Its configuration is tight coupled to that library.
+`@carbonext/oidc-client-ts` library. Its configuration is tight coupled to that library.
 
-- [oidc-client-ts](https://github.com/authts/oidc-client-ts)
+-   [@carbonext/oidc-client-ts](https://github.com/carbonext-tech/oidc-client-ts)
 
 The
 [`User`](https://authts.github.io/oidc-client-ts/classes/User.html)
@@ -45,13 +47,13 @@ feature of `oidc-client-ts` can be used.
 Using [npm](https://npmjs.org/)
 
 ```bash
-npm install oidc-client-ts react-oidc-context --save
+npm install @carbonext/oidc-client-ts @carbonext/react-oidc-context --save
 ```
 
 Using [yarn](https://yarnpkg.com/)
 
 ```bash
-yarn add oidc-client-ts react-oidc-context
+yarn add @carbonext/oidc-client-ts @carbonext/react-oidc-context
 ```
 
 ## Getting Started
@@ -62,21 +64,21 @@ Configure the library by wrapping your application in `AuthProvider`:
 // src/index.jsx
 import React from "react";
 import ReactDOM from "react-dom";
-import { AuthProvider } from "react-oidc-context";
+import { AuthProvider } from "@carbonext/react-oidc-context";
 import App from "./App";
 
 const oidcConfig = {
-  authority: "<your authority>",
-  client_id: "<your client id>",
-  redirect_uri: "<your redirect uri>",
-  // ...
+    authority: "<your authority>",
+    client_id: "<your client id>",
+    redirect_uri: "<your redirect uri>",
+    // ...
 };
 
 ReactDOM.render(
-  <AuthProvider {...oidcConfig}>
-    <App />
-  </AuthProvider>,
-  document.getElementById("app")
+    <AuthProvider {...oidcConfig}>
+        <App />
+    </AuthProvider>,
+    document.getElementById("app")
 );
 ```
 
@@ -87,7 +89,7 @@ Use the `useAuth` hook in your components to access authentication state
 ```jsx
 // src/App.jsx
 import React from "react";
-import { useAuth } from "react-oidc-context";
+import { useAuth } from "@carbonext/react-oidc-context";
 
 function App() {
     const auth = useAuth();
@@ -104,15 +106,19 @@ function App() {
     }
 
     if (auth.error) {
-        return <div>Oops... {auth.error.kind} caused {auth.error.message}</div>;
+        return (
+            <div>
+                Oops... {auth.error.kind} caused {auth.error.message}
+            </div>
+        );
     }
 
     if (auth.isAuthenticated) {
         return (
-        <div>
-            Hello {auth.user?.profile.sub}{" "}
-            <button onClick={() => void auth.removeUser()}>Log out</button>
-        </div>
+            <div>
+                Hello {auth.user?.profile.sub}{" "}
+                <button onClick={() => void auth.removeUser()}>Log out</button>
+            </div>
         );
     }
 
@@ -124,8 +130,7 @@ export default App;
 
 You **must** provide an implementation of `onSigninCallback` to `oidcConfig` to remove the payload from the URL upon successful login. Otherwise if you refresh the page and the payload is still there, `signinSilent` - which handles renewing your token - won't work.
 
-A working implementation is already in the code [here](https://github.com/authts/react-oidc-context/blob/f175dcba6ab09871b027d6a2f2224a17712b67c5/src/AuthProvider.tsx#L20-L30).
-
+A working implementation is already in the code [here](https://github.com/carbonext-tech/react-oidc-context/blob/f175dcba6ab09871b027d6a2f2224a17712b67c5/src/AuthProvider.tsx#L20-L30).
 
 ### Use with a Class Component
 
@@ -135,7 +140,7 @@ components:
 ```jsx
 // src/Profile.jsx
 import React from "react";
-import { withAuth } from "react-oidc-context";
+import { withAuth } from "@carbonext/react-oidc-context";
 
 class Profile extends React.Component {
     render() {
@@ -155,7 +160,7 @@ As a child of `AuthProvider` with a user containing an access token:
 ```jsx
 // src/Posts.jsx
 import React from "react";
-import { useAuth } from "react-oidc-context";
+import { useAuth } from "@carbonext/react-oidc-context";
 
 const Posts = () => {
     const auth = useAuth();
@@ -183,9 +188,9 @@ const Posts = () => {
 
     return (
         <ul>
-        {posts.map((post, index) => {
-            return <li key={index}>{post}</li>;
-        })}
+            {posts.map((post, index) => {
+                return <li key={index}>{post}</li>;
+            })}
         </ul>
     );
 };
@@ -198,10 +203,12 @@ As **not** a child of `AuthProvider` (e.g. redux slice) when using local storage
 
 ```jsx
 // src/slice.js
-import { User } from "oidc-client-ts"
+import { User } from "@carbonext/oidc-client-ts";
 
 function getUser() {
-    const oidcStorage = localStorage.getItem(`oidc.user:<your authority>:<your client id>`)
+    const oidcStorage = localStorage.getItem(
+        `oidc.user:<your authority>:<your client id>`
+    );
     if (!oidcStorage) {
         return null;
     }
@@ -219,9 +226,9 @@ export const getPosts = createAsyncThunk(
                 Authorization: `Bearer ${token}`,
             },
         });
-    },
+    }
     // ...
-)
+);
 ```
 
 ### Protect a route
@@ -230,13 +237,13 @@ Secure a route component by using the `withAuthenticationRequired` higher-order 
 to access this route without authentication, they will be redirected to the login page.
 
 ```jsx
-import React from 'react';
-import { withAuthenticationRequired } from "react-oidc-context";
+import React from "react";
+import { withAuthenticationRequired } from "@carbonext/react-oidc-context";
 
-const PrivateRoute = () => (<div>Private</div>);
+const PrivateRoute = () => <div>Private</div>;
 
 export default withAuthenticationRequired(PrivateRoute, {
-  OnRedirecting: () => (<div>Redirecting to the login page...</div>)
+    OnRedirecting: () => <div>Redirecting to the login page...</div>,
 });
 ```
 
@@ -247,7 +254,7 @@ The underlying [`UserManagerEvents`](https://authts.github.io/oidc-client-ts/cla
 ```jsx
 // src/App.jsx
 import React from "react";
-import { useAuth } from "react-oidc-context";
+import { useAuth } from "@carbonext/react-oidc-context";
 
 function App() {
     const auth = useAuth();
@@ -255,10 +262,14 @@ function App() {
     React.useEffect(() => {
         // the `return` is important - addAccessTokenExpiring() returns a cleanup function
         return auth.events.addAccessTokenExpiring(() => {
-            if (alert("You're about to be signed out due to inactivity. Press continue to stay signed in.")) {
+            if (
+                alert(
+                    "You're about to be signed out due to inactivity. Press continue to stay signed in."
+                )
+            ) {
                 auth.signinSilent();
             }
-        })
+        });
     }, [auth.events, auth.signinSilent]);
 
     return <button onClick={() => void auth.signinRedirect()}>Log in</button>;
@@ -282,7 +293,7 @@ const oidcConfig: AuthProviderProps = {
 ```jsx
 // src/App.jsx
 import React from "react";
-import { useAuth, hasAuthParams } from "react-oidc-context";
+import { useAuth, hasAuthParams } from "@carbonext/react-oidc-context";
 
 function App() {
     const auth = useAuth();
@@ -290,8 +301,11 @@ function App() {
 
     // automatically sign-in
     React.useEffect(() => {
-        if (!hasAuthParams() &&
-            !auth.isAuthenticated && !auth.activeNavigator && !auth.isLoading &&
+        if (
+            !hasAuthParams() &&
+            !auth.isAuthenticated &&
+            !auth.activeNavigator &&
+            !auth.isLoading &&
             !hasTriedSignin
         ) {
             auth.signinRedirect();
@@ -320,11 +334,13 @@ Use the `useAutoSignin` hook inside the AuthProvider to automatically sign in.
 ```jsx
 // src/App.jsx
 import React from "react";
-import { useAutoSignin } from "react-oidc-context";
+import { useAutoSignin } from "@carbonext/react-oidc-context";
 
 function App() {
     // If you provide no signinMethod at all, the default is signinRedirect
-    const { isLoading, isAuthenticated, error } = useAutoSignin({signinMethod: "signinRedirect"});
+    const { isLoading, isAuthenticated, error } = useAutoSignin({
+        signinMethod: "signinRedirect",
+    });
 
     if (isLoading) {
         return <div>Signing you in/out...</div>;
@@ -334,8 +350,8 @@ function App() {
         return <div>Unable to log in</div>;
     }
 
-    if(error) {
-        return <div>An error occured</div>
+    if (error) {
+        return <div>An error occured</div>;
     }
 
     return <div>Signed in successfully</div>;
