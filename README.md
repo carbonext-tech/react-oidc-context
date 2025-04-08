@@ -1,4 +1,4 @@
-# react-oidc-context
+# @carbonext-tech/react-oidc-context
 
 [![Stable Release](https://img.shields.io/npm/v/react-oidc-context.svg)](https://npm.im/react-oidc-context)
 [![CI](https://github.com/authts/react-oidc-context/actions/workflows/ci.yml/badge.svg)](https://github.com/authts/react-oidc-context/actions/workflows/ci.yml)
@@ -12,19 +12,19 @@ single page applications (SPA). Support for
 
 ## Table of Contents
 
-- [Documentation](#documentation)
-- [Installation](#installation)
-- [Getting Started](#getting-started)
-- [Contributing](#contributing)
-- [Influences](#influences)
-- [License](#license)
+-   [Documentation](#documentation)
+-   [Installation](#installation)
+-   [Getting Started](#getting-started)
+-   [Contributing](#contributing)
+-   [Influences](#influences)
+-   [License](#license)
 
 ## Documentation
 
 This library implements an auth context provider by making use of the
 `oidc-client-ts` library. Its configuration is tight coupled to that library.
 
-- [oidc-client-ts](https://github.com/authts/oidc-client-ts)
+-   [oidc-client-ts](https://github.com/authts/oidc-client-ts)
 
 The
 [`User`](https://authts.github.io/oidc-client-ts/classes/User.html)
@@ -60,17 +60,17 @@ import { AuthProvider } from "react-oidc-context";
 import App from "./App";
 
 const oidcConfig = {
-  authority: "<your authority>",
-  client_id: "<your client id>",
-  redirect_uri: "<your redirect uri>",
-  // ...
+    authority: "<your authority>",
+    client_id: "<your client id>",
+    redirect_uri: "<your redirect uri>",
+    // ...
 };
 
 ReactDOM.render(
-  <AuthProvider {...oidcConfig}>
-    <App />
-  </AuthProvider>,
-  document.getElementById("app")
+    <AuthProvider {...oidcConfig}>
+        <App />
+    </AuthProvider>,
+    document.getElementById("app")
 );
 ```
 
@@ -103,10 +103,10 @@ function App() {
 
     if (auth.isAuthenticated) {
         return (
-        <div>
-            Hello {auth.user?.profile.sub}{" "}
-            <button onClick={() => void auth.removeUser()}>Log out</button>
-        </div>
+            <div>
+                Hello {auth.user?.profile.sub}{" "}
+                <button onClick={() => void auth.removeUser()}>Log out</button>
+            </div>
         );
     }
 
@@ -172,9 +172,9 @@ const Posts = () => {
 
     return (
         <ul>
-        {posts.map((post, index) => {
-            return <li key={index}>{post}</li>;
-        })}
+            {posts.map((post, index) => {
+                return <li key={index}>{post}</li>;
+            })}
         </ul>
     );
 };
@@ -187,10 +187,12 @@ As **not** a child of `AuthProvider` (e.g. redux slice) when using local storage
 
 ```jsx
 // src/slice.js
-import { User } from "oidc-client-ts"
+import { User } from "oidc-client-ts";
 
 function getUser() {
-    const oidcStorage = localStorage.getItem(`oidc.user:<your authority>:<your client id>`)
+    const oidcStorage = localStorage.getItem(
+        `oidc.user:<your authority>:<your client id>`
+    );
     if (!oidcStorage) {
         return null;
     }
@@ -208,9 +210,9 @@ export const getPosts = createAsyncThunk(
                 Authorization: `Bearer ${token}`,
             },
         });
-    },
+    }
     // ...
-)
+);
 ```
 
 ### Adding event listeners
@@ -228,11 +230,15 @@ function App() {
     React.useEffect(() => {
         // the `return` is important - addAccessTokenExpiring() returns a cleanup function
         return auth.events.addAccessTokenExpiring(() => {
-            if (alert("You're about to be signed out due to inactivity. Press continue to stay signed in.")) {
+            if (
+                alert(
+                    "You're about to be signed out due to inactivity. Press continue to stay signed in."
+                )
+            ) {
                 auth.signinSilent();
             }
-        })
-    }, [auth.events, auth.signinSilent])
+        });
+    }, [auth.events, auth.signinSilent]);
 
     return <button onClick={() => void auth.signinRedirect()}>Log in</button>;
 }
