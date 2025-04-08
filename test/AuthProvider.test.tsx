@@ -1,6 +1,7 @@
 import { renderHook, waitFor, act } from "@testing-library/react";
 import { mocked } from "jest-mock";
 import { UserManager, User } from "@carbonext/oidc-client-ts";
+
 import { useAuth } from "../src/useAuth";
 import { createWrapper } from "./helpers";
 
