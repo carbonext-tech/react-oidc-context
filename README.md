@@ -1,4 +1,4 @@
-# @carbonext-tech/react-oidc-context
+# @carbonext/react-oidc-context
 
 [![Stable Release](https://img.shields.io/npm/v/react-oidc-context.svg)](https://npm.im/react-oidc-context)
 [![CI](https://github.com/authts/react-oidc-context/actions/workflows/ci.yml/badge.svg)](https://github.com/authts/react-oidc-context/actions/workflows/ci.yml)
