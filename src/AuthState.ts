@@ -9,7 +9,6 @@ import type {
     User,
 } from "@carbonext/oidc-client-ts";
 
-
 /**
  * The auth state which, when combined with the auth methods, make up the return object of the `useAuth` hook.
  *
