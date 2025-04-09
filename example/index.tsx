@@ -1,7 +1,8 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React from "react";
 
-import { AuthProvider, useAuth } from "../src/.";
+import { createRoot } from "react-dom/client";
+
+import { AuthProvider, useAuth } from "../src";
 
 const oidcConfig = {
     authority: "<your authority>",
@@ -17,7 +18,7 @@ function App() {
     }
 
     if (auth.error) {
-        return <div>Oops... {auth.error.message}</div>;
+        return <div>Oops... {auth.error.source} caused {auth.error.message}</div>;
     }
 
     if (auth.isAuthenticated) {
@@ -34,9 +35,12 @@ function App() {
     return <button onClick={() => void auth.signinRedirect()}>Log in</button>;
 }
 
-ReactDOM.render(
+const rootElement = document.getElementById("root");
+if (!rootElement) throw new Error("Failed to find the root element");
+const root = createRoot(rootElement);
+
+root.render(
     <AuthProvider {...oidcConfig}>
         <App />
     </AuthProvider>,
-    document.getElementById("root"),
 );

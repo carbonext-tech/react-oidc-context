@@ -1,7 +1,6 @@
 {
   "name": "example",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "parcel index.html",
@@ -9,13 +8,13 @@
   },
   "alias": {
     "react": "../node_modules/react",
-    "react-dom": "../node_modules/react-dom/profiling",
+    "react-dom": "../node_modules/react-dom",
     "scheduler/tracing": "../node_modules/scheduler/tracing-profiling"
   },
   "devDependencies": {
-    "@types/react": "^16.9.11",
-    "@types/react-dom": "^16.8.4",
-    "parcel": "^1.12.3",
-    "typescript": "^3.4.5"
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "parcel": "^2.14.2",
+    "typescript": "~5.8.2"
   }
 }

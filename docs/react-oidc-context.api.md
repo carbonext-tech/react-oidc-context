@@ -11,9 +11,12 @@ import type { RevokeTokensTypes } from '@carbonext/oidc-client-ts';
 import type { SessionStatus } from '@carbonext/oidc-client-ts';
 import type { SigninPopupArgs } from '@carbonext/oidc-client-ts';
 import type { SigninRedirectArgs } from '@carbonext/oidc-client-ts';
+import type { SigninResourceOwnerCredentialsArgs } from '@carbonext/oidc-client-ts';
 import type { SigninSilentArgs } from '@carbonext/oidc-client-ts';
 import type { SignoutPopupArgs } from '@carbonext/oidc-client-ts';
 import type { SignoutRedirectArgs } from '@carbonext/oidc-client-ts';
+import type { SignoutResponse } from '@carbonext/oidc-client-ts';
+import type { SignoutSilentArgs } from '@carbonext/oidc-client-ts';
 import { User } from '@carbonext/oidc-client-ts';
 import { UserManager } from '@carbonext/oidc-client-ts';
 import type { UserManagerEvents } from '@carbonext/oidc-client-ts';
@@ -42,11 +45,15 @@ export interface AuthContextProps extends AuthState {
     // (undocumented)
     signinRedirect(args?: SigninRedirectArgs): Promise<void>;
     // (undocumented)
+    signinResourceOwnerCredentials(args: SigninResourceOwnerCredentialsArgs): Promise<User>;
+    // (undocumented)
     signinSilent(args?: SigninSilentArgs): Promise<User | null>;
     // (undocumented)
     signoutPopup(args?: SignoutPopupArgs): Promise<void>;
     // (undocumented)
     signoutRedirect(args?: SignoutRedirectArgs): Promise<void>;
+    // (undocumented)
+    signoutSilent(args?: SignoutSilentArgs): Promise<void>;
     // (undocumented)
     startSilentRenew(): void;
     // (undocumented)
@@ -54,29 +61,76 @@ export interface AuthContextProps extends AuthState {
 }
 
 // @public
-export const AuthProvider: (props: AuthProviderProps) => JSX.Element;
+export const AuthProvider: (props: AuthProviderProps) => React_2.JSX.Element;
 
 // @public (undocumented)
-export interface AuthProviderProps extends UserManagerSettings {
+export interface AuthProviderBaseProps {
     children?: React_2.ReactNode;
-    implementation?: typeof UserManager | null;
+    matchSignoutCallback?: (args: UserManagerSettings) => boolean;
     onRemoveUser?: () => Promise<void> | void;
-    onSigninCallback?: (user: User | void) => Promise<void> | void;
-    // @deprecated (undocumented)
-    onSignoutPopup?: () => Promise<void> | void;
-    // @deprecated (undocumented)
-    onSignoutRedirect?: () => Promise<void> | void;
+    onSigninCallback?: (user: User | undefined) => Promise<void> | void;
+    onSignoutCallback?: (resp: SignoutResponse | undefined) => Promise<void> | void;
     skipSigninCallback?: boolean;
 }
 
 // @public
+export interface AuthProviderNoUserManagerProps extends AuthProviderBaseProps, UserManagerSettings {
+    userManager?: never;
+}
+
+// @public (undocumented)
+export type AuthProviderProps = AuthProviderNoUserManagerProps | AuthProviderUserManagerProps;
+
+// @public
+export interface AuthProviderUserManagerProps extends AuthProviderBaseProps {
+    userManager?: UserManager;
+}
+
+// @public
 export interface AuthState {
-    activeNavigator?: "signinRedirect" | "signinPopup" | "signinSilent" | "signoutRedirect" | "signoutPopup" | "registerRedirect";
-    error?: Error;
+    activeNavigator?: "signinRedirect" | "signinResourceOwnerCredentials" | "signinPopup" | "signinSilent" | "signoutRedirect" | "signoutPopup" | "signoutSilent" | "registerRedirect";
+    error?: ErrorContext;
     isAuthenticated: boolean;
     isLoading: boolean;
     user?: User | null;
 }
+
+// @public
+export type ErrorContext = Error & {
+    innerError?: unknown;
+} & ({
+    source: "signinCallback";
+} | {
+    source: "signoutCallback";
+} | {
+    source: "renewSilent";
+} | {
+    source: "signinPopup";
+    args: SigninPopupArgs | undefined;
+} | {
+    source: "signinSilent";
+    args: SigninSilentArgs | undefined;
+} | {
+    source: "signinRedirect";
+    args: SigninRedirectArgs | undefined;
+} | {
+    source: "registerRedirect";
+    args: RegisterRedirectArgs | undefined;
+} | {
+    source: "signinResourceOwnerCredentials";
+    args: SigninResourceOwnerCredentialsArgs | undefined;
+} | {
+    source: "signoutPopup";
+    args: SignoutPopupArgs | undefined;
+} | {
+    source: "signoutRedirect";
+    args: SignoutRedirectArgs | undefined;
+} | {
+    source: "signoutSilent";
+    args: SignoutSilentArgs | undefined;
+} | {
+    source: "unknown";
+});
 
 // @public (undocumented)
 export const hasAuthParams: (location?: Location) => boolean;
@@ -84,8 +138,24 @@ export const hasAuthParams: (location?: Location) => boolean;
 // @public (undocumented)
 export const useAuth: () => AuthContextProps;
 
+// Warning: (ae-forgotten-export) The symbol "UseAutoSignInProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "UseAutoSignInReturn" needs to be exported by the entry point index.d.ts
+//
 // @public
-export function withAuth<P extends AuthContextProps>(Component: React_2.ComponentType<P>): React_2.ComponentType<Omit<P, keyof AuthContextProps>>;
+export const useAutoSignin: ({ signinMethod }?: UseAutoSignInProps) => UseAutoSignInReturn;
+
+// @public
+export function withAuth<P>(Component: React_2.ComponentType<P>): React_2.ComponentType<Omit<P, keyof AuthContextProps>>;
+
+// @public
+export const withAuthenticationRequired: <P extends object>(Component: React_2.ComponentType<P>, options?: WithAuthenticationRequiredProps) => React_2.FC<P>;
+
+// @public (undocumented)
+export interface WithAuthenticationRequiredProps {
+    onBeforeSignin?: () => Promise<void> | void;
+    OnRedirecting?: () => React_2.JSX.Element;
+    signinRedirectArgs?: SigninRedirectArgs;
+}
 
 // (No @packageDocumentation comment for this package)
 

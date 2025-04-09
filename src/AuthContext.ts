@@ -1,13 +1,22 @@
 import React from "react";
 import type {
-    UserManagerSettings, UserManagerEvents, User, SessionStatus,
-    SigninPopupArgs, SigninSilentArgs, SigninRedirectArgs,
-    SignoutRedirectArgs, SignoutPopupArgs, QuerySessionStatusArgs,
+    UserManagerSettings,
+    UserManagerEvents,
+    User,
+    SessionStatus,
+    SigninPopupArgs,
+    SigninSilentArgs,
+    SigninRedirectArgs,
+    SignoutRedirectArgs,
+    SignoutPopupArgs,
+    QuerySessionStatusArgs,
+    RegisterRedirectArgs,
     RevokeTokensTypes,
+    SignoutSilentArgs,
+    SigninResourceOwnerCredentialsArgs,
 } from "@carbonext/oidc-client-ts";
 
 import type { AuthState } from "./AuthState";
-import type { RegisterRedirectArgs } from "@carbonext/oidc-client-ts";
 
 /**
  * @public
@@ -23,10 +32,16 @@ export interface AuthContextProps extends AuthState {
     signinPopup(args?: SigninPopupArgs): Promise<User>;
     signinSilent(args?: SigninSilentArgs): Promise<User | null>;
     signinRedirect(args?: SigninRedirectArgs): Promise<void>;
-    registerRedirect(args?: RegisterRedirectArgs): Promise<void>;
+    signinResourceOwnerCredentials(
+        args: SigninResourceOwnerCredentialsArgs
+    ): Promise<User>;
     signoutRedirect(args?: SignoutRedirectArgs): Promise<void>;
+    registerRedirect(args?: RegisterRedirectArgs): Promise<void>;
     signoutPopup(args?: SignoutPopupArgs): Promise<void>;
-    querySessionStatus(args?: QuerySessionStatusArgs): Promise<SessionStatus | null>;
+    signoutSilent(args?: SignoutSilentArgs): Promise<void>;
+    querySessionStatus(
+        args?: QuerySessionStatusArgs
+    ): Promise<SessionStatus | null>;
     revokeTokens(types?: RevokeTokensTypes): Promise<void>;
     startSilentRenew(): void;
     stopSilentRenew(): void;
@@ -35,5 +50,7 @@ export interface AuthContextProps extends AuthState {
 /**
  * @public
  */
-export const AuthContext = React.createContext<AuthContextProps | undefined>(undefined);
+export const AuthContext = React.createContext<AuthContextProps | undefined>(
+    undefined,
+);
 AuthContext.displayName = "AuthContext";
