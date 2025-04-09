@@ -214,38 +214,41 @@ export const AuthProvider = (props: AuthProviderProps): React.JSX.Element => {
                     ]),
                 ) as Pick<UserManager, (typeof userManagerContextKeys)[number]>,
                 Object.fromEntries(
-                    navigatorKeys.map((key) => [
-                        key,
-                        userManager[key]
-                            ? async (
-                                args: ProcessResourceOwnerPasswordCredentialsArgs &
-                                      never[],
-                            ) => {
-                                dispatch({
-                                    type: "NAVIGATOR_INIT",
-                                    method: key,
-                                });
-                                try {
-                                    return await userManager[key](args);
-                                } catch (error) {
+                    navigatorKeys.map((key) => {
+                        console.log("navigatorKeys map", key, userManager[key]);
+                        return [
+                            key,
+                            userManager[key]
+                                ? async (
+                                    args: ProcessResourceOwnerPasswordCredentialsArgs &
+                                          never[],
+                                ) => {
                                     dispatch({
-                                        type: "ERROR",
-                                        error: {
-                                            ...normalizeError(
-                                                error,
-                                                `Unknown error while executing ${key}(...).`,
-                                            ),
-                                            source: key,
-                                            args: args,
-                                        } as ErrorContext,
+                                        type: "NAVIGATOR_INIT",
+                                        method: key,
                                     });
-                                    return null;
-                                } finally {
-                                    dispatch({ type: "NAVIGATOR_CLOSE" });
+                                    try {
+                                        return await userManager[key](args);
+                                    } catch (error) {
+                                        dispatch({
+                                            type: "ERROR",
+                                            error: {
+                                                ...normalizeError(
+                                                    error,
+                                                    `Unknown error while executing ${key}(...).`,
+                                                ),
+                                                source: key,
+                                                args: args,
+                                            } as ErrorContext,
+                                        });
+                                        return null;
+                                    } finally {
+                                        dispatch({ type: "NAVIGATOR_CLOSE" });
+                                    }
                                 }
-                            }
-                            : unsupportedEnvironment(key),
-                    ]),
+                                : unsupportedEnvironment(key),
+                        ];
+                    }),
                 ) as Pick<UserManager, (typeof navigatorKeys)[number]>,
             ),
         [userManager],

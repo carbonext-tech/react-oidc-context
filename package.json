@@ -1,6 +1,6 @@
 {
   "name": "@carbonext/react-oidc-context",
-  "version": "2.0.0",
+  "version": "2.0.0-beta.1",
   "description": "OpenID Connect & OAuth2 authentication using react context api as state management | Carbonext",
   "repository": {
     "type": "git",
@@ -40,7 +40,7 @@
     "prepare": "husky"
   },
   "peerDependencies": {
-    "@carbonext/oidc-client-ts": "^2.0.0",
+    "@carbonext/oidc-client-ts": "^2.0.1-beta",
     "react": ">=16.14.0"
   },
   "devDependencies": {

@@ -1,4 +1,5 @@
 import type {
+    RegisterRedirectArgs,
     SigninPopupArgs,
     SigninRedirectArgs,
     SigninResourceOwnerCredentialsArgs,
@@ -63,6 +64,7 @@ export type ErrorContext = Error & {
         | { source: "signinPopup"; args: SigninPopupArgs | undefined }
         | { source: "signinSilent"; args: SigninSilentArgs | undefined }
         | { source: "signinRedirect"; args: SigninRedirectArgs | undefined }
+        | { source: "registerRedirect"; args: RegisterRedirectArgs | undefined }
         | {
             source: "signinResourceOwnerCredentials";
             args: SigninResourceOwnerCredentialsArgs | undefined;

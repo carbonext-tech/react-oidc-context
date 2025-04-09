@@ -114,6 +114,9 @@ export type ErrorContext = Error & {
     source: "signinRedirect";
     args: SigninRedirectArgs | undefined;
 } | {
+    source: "registerRedirect";
+    args: RegisterRedirectArgs | undefined;
+} | {
     source: "signinResourceOwnerCredentials";
     args: SigninResourceOwnerCredentialsArgs | undefined;
 } | {

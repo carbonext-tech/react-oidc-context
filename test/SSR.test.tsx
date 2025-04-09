@@ -3,7 +3,7 @@ import { useAuth } from "../src/useAuth";
 import { createWrapper } from "./helpers";
 
 // force Node environment (no window)
-jest.unmock("oidc-client-ts");
+jest.unmock("@carbonext/oidc-client-ts");
 
 describe("In a Node SSR environment", () => {
     it("auth state is initialised", async () => {
@@ -11,7 +11,8 @@ describe("In a Node SSR environment", () => {
         const wrapper = createWrapper({
             authority: "authority",
             client_id: "client",
-            redirect_uri: "redirect" });
+            redirect_uri: "redirect",
+        });
 
         const { result } = renderHook(() => useAuth(), {
             wrapper,
