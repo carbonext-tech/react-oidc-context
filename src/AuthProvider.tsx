@@ -215,7 +215,6 @@ export const AuthProvider = (props: AuthProviderProps): React.JSX.Element => {
                 ) as Pick<UserManager, (typeof userManagerContextKeys)[number]>,
                 Object.fromEntries(
                     navigatorKeys.map((key) => {
-                        console.log("navigatorKeys map", key, userManager[key]);
                         return [
                             key,
                             userManager[key]
