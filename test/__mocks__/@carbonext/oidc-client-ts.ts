@@ -55,6 +55,9 @@ MockUserManager.prototype.signinSilentCallback = jest
 MockUserManager.prototype.signinRedirect = jest
     .fn()
     .mockResolvedValue(undefined);
+MockUserManager.prototype.registerRedirect = jest
+    .fn()
+    .mockResolvedValue(undefined);
 MockUserManager.prototype.signinRedirectCallback = jest
     .fn()
     .mockResolvedValue(undefined);
